@@ -8,8 +8,133 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>YOUR NAME Grocery Order Processing</title>
+  <title>Your Name Grocery Order Processing</title>
+  <style>
+    /* General Body Styling */
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f7f7f7;
+      color: #333;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* Container for main content */
+    .container {
+      max-width: 800px;
+      width: 100%;
+      padding: 20px;
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+      margin-top: 20px;
+    }
+
+    /* Header Styling */
+    h2 {
+      color: #0073e6;
+      text-align: center;
+    }
+
+    h3 {
+      color: #333;
+      font-weight: normal;
+      margin-top: 10px;
+    }
+
+    /* Order Summary Table */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      margin-bottom: 20px;
+    }
+
+    table, th, td {
+      border: 1px solid #ddd;
+    }
+
+    th, td {
+      padding: 12px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #0073e6;
+      color: white;
+      font-weight: bold;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
+
+    tr:hover {
+      background-color: #e8f4ff;
+    }
+
+    /* Total Row */
+    tr:last-child td {
+      font-weight: bold;
+      background-color: #e6f7ff;
+    }
+
+    /* Error and Success Messages */
+    .error-message {
+      color: #e74c3c;
+      font-weight: bold;
+      margin-top: 10px;
+    }
+
+    .success-message {
+      color: #2ecc71;
+      font-weight: bold;
+      margin-top: 10px;
+    }
+
+    /* Form Field Styling */
+    label {
+      font-weight: bold;
+      display: inline-block;
+      margin-top: 10px;
+    }
+
+    input[type="text"], input[type="password"] {
+      width: calc(100% - 24px);
+      padding: 10px;
+      margin-top: 5px;
+      margin-bottom: 15px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+
+    input[type="submit"] {
+      background-color: #0073e6;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    input[type="submit"]:hover {
+      background-color: #005bb5;
+    }
+
+    /* Footer Note */
+    .footer-note {
+      margin-top: 20px;
+      font-size: 14px;
+      color: #888;
+      text-align: center;
+    }
+  </style>
 </head>
+
 <body>
 
 
@@ -29,6 +154,8 @@ try (Connection con = DriverManager.getConnection(url, uid, pw);
 
 // Get customer id
 String custId = request.getParameter("customerId");
+String password = request.getParameter("password");
+boolean isAuthenticated = false;
 @SuppressWarnings({"unchecked"})
 HashMap<String, ArrayList<Object>> productList = (HashMap<String, ArrayList<Object>>) session.getAttribute("productList");
 
@@ -57,6 +184,22 @@ if(custId==null){
 	}
 
 }
+
+ PreparedStatement stmtm = con.prepareStatement("SELECT password FROM customer WHERE customerId = ?"); 
+
+    stmtm.setString(1, custId);
+    ResultSet rs1 = stmtm.executeQuery();
+
+    if (rs1.next()) {
+        String storedPassword = rs1.getString("password");
+        if (storedPassword.equals(password)) {
+            isAuthenticated = true;
+        }
+    }
+
+if(isAuthenticated){
+
+
 
 
 
@@ -253,7 +396,10 @@ out.println("</table>");
 // Clear cart if order placed successfully
 session.setAttribute("productList", null);
 
-
+	}
+	else{
+		out.println("<h2>Authentication failed. Invalid Customer ID or Password.</h2>");
+	}
 }
 %>
 </BODY>
