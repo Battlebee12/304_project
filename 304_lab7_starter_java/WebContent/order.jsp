@@ -29,6 +29,8 @@ try (Connection con = DriverManager.getConnection(url, uid, pw);
 
 // Get customer id
 String custId = request.getParameter("customerId");
+String password = request.getParameter("password");
+boolean isAuthenticated = false;
 @SuppressWarnings({"unchecked"})
 HashMap<String, ArrayList<Object>> productList = (HashMap<String, ArrayList<Object>>) session.getAttribute("productList");
 
@@ -57,6 +59,22 @@ if(custId==null){
 	}
 
 }
+
+ PreparedStatement stmtm = con.prepareStatement("SELECT password FROM customer WHERE customerId = ?"); 
+
+    stmtm.setString(1, custId);
+    ResultSet rs1 = stmtm.executeQuery();
+
+    if (rs1.next()) {
+        String storedPassword = rs1.getString("password");
+        if (storedPassword.equals(password)) {
+            isAuthenticated = true;
+        }
+    }
+
+if(isAuthenticated){
+
+
 
 
 
@@ -253,7 +271,10 @@ out.println("</table>");
 // Clear cart if order placed successfully
 session.setAttribute("productList", null);
 
-
+	}
+	else{
+		out.println("<h2>Authentication failed. Invalid Customer ID or Password.</h2>");
+	}
 }
 %>
 </BODY>
