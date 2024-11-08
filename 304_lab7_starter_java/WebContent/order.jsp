@@ -147,8 +147,41 @@ if (generatedKeys.next()) {
 
 // Insert each item into OrderProduct table using OrderId from previous INSERT
 
+if (orderId > 0) {
+	// Just checking if the order Id is greatre=er than 0
+    String insertOrderProductSQL = "INSERT INTO OrderProduct (orderId, productId, quantity, price) VALUES (?, ?, ?, ?)";
+    PreparedStatement productStmt = con.prepareStatement(insertOrderProductSQL);
+
+    Iterator<Map.Entry<String, ArrayList<Object>>> iterator = productList.entrySet().iterator();
+    while (iterator.hasNext()) {
+        Map.Entry<String, ArrayList<Object>> entry = iterator.next();
+        ArrayList<Object> product = entry.getValue();
+
+        if (product.size() == 4) {
+            // try {
+                String productId = product.get(0).toString();
+                double price = Double.parseDouble(product.get(2).toString());
+                int quantity = Integer.parseInt(product.get(3).toString());
+                productStmt.setInt(1, orderId);         
+                productStmt.setString(2, productId);    
+                productStmt.setInt(3, quantity);        
+                productStmt.setDouble(4, price);        
+                productStmt.executeUpdate();
+			
+            // } catch (NumberFormatException e) {
+            //     out.println("Invalid data for product: " + product.get(0));
+            // }
+        }
+    }
+
+    productStmt.close();
+} else {
+    out.println("Not able to insert into OrderProduct table");
+}
+
 
 // Update total amount for order record
+// Done above when updating the database (orderSummary) with the order details
 
 // Here is the code to traverse through a HashMap
 // Each entry in the HashMap is an ArrayList with item 0-id, 1-name, 2-quantity, 3-price
@@ -168,8 +201,58 @@ if (generatedKeys.next()) {
 */
 
 // Print out order summary
+out.println();
+out.println("<h2>Order Summary</h2>");
+out.println("<table border='1'><tr><th>Product ID</th><th>Product Name</th><th>Quantity</th><th>Price</th><th>Subtotal</th></tr>");
+
+Iterator<Map.Entry<String, ArrayList<Object>>> iterator = productList.entrySet().iterator();
+while (iterator.hasNext()) {
+    Map.Entry<String, ArrayList<Object>> entry = iterator.next();
+    ArrayList<Object> product = entry.getValue();
+
+    if (product.size() == 4) {
+        String productId = product.get(0).toString();
+        String productName = product.get(1).toString();
+        int quantity = Integer.parseInt(product.get(3).toString());
+        double price = Double.parseDouble(product.get(2).toString());
+        double totalProductPrice = price * quantity;
+        
+        out.println("<tr>");
+        out.println("<td>" + productId + "</td>");
+        out.println("<td>" + productName + "</td>");
+        out.println("<td>" + quantity + "</td>");
+        out.println("<td>" + price + "</td>");
+        out.println("<td>" + totalProductPrice + "</td>");
+        out.println("</tr>");
+    }
+}
+
+out.println("<tr><td colspan='4'><strong>Total</strong></td><td>" + totalAmount + "</td></tr>");
+out.println("</table>");
+
+    // Order placed successfully, display confirmation
+    String customerQuery = "SELECT firstName, lastName, address, city, state, postalCode, country FROM customer WHERE customerId=?";
+    PreparedStatement customerStmt = con.prepareStatement(customerQuery);
+    customerStmt.setString(1, custId);
+    ResultSet customerRes = customerStmt.executeQuery();
+    
+    if (customerRes.next()) {
+        String firstName = customerRes.getString("firstName");
+        String lastName = customerRes.getString("lastName");
+        String fullName = firstName + " " + lastName;
+        out.println("<h2>Order completed. Will be shipped soon...</h2>");
+        out.println("<p>Your order reference number is: " + orderId + "</p>");
+        out.println("<h3>Shipping to customer:</h3>");
+        out.println("<h3>1 Name: " + fullName + "</h3>");
+        
+    } else {
+        out.println("<p>Error retrieving customer information.</p>");
+    }
+
 
 // Clear cart if order placed successfully
+session.setAttribute("productList", null);
+
 
 }
 %>
