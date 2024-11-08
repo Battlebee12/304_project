@@ -4,44 +4,97 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>YOUR NAME Grocery</title>
+<title>Your Name Grocery</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f7f7f7;
+        color: #333;
+        padding: 20px;
+    }
+    h1 {
+        color: #2c3e50;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+    th, td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: center;
+    }
+    th {
+        background-color: #3498db;
+        color: white;
+    }
+    tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+    a {
+        color: #3498db;
+        text-decoration: none;
+    }
+</style>
 </head>
 <body>
 
 <h1>Search for the products you want to buy:</h1>
 
 <form method="get" action="listprod.jsp">
-<input type="text" name="productName" size="50">
-<input type="submit" value="Submit"><input type="reset" value="Reset"> (Leave blank for all products)
+    <input type="text" name="productName" size="50">
+    <input type="submit" value="Submit">
+    <input type="reset" value="Reset"> (Leave blank for all products)
 </form>
 
-<% // Get product name to search for
+<%
 String name = request.getParameter("productName");
-		
-//Note: Forces loading of SQL Server driver
-try
-{	// Load driver class
-	Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-}
-catch (java.lang.ClassNotFoundException e)
-{
-	out.println("ClassNotFoundException: " +e);
+try {
+    Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+} catch (java.lang.ClassNotFoundException e) {
+    out.println("ClassNotFoundException: " + e);
 }
 
-// Variable name now contains the search string the user entered
-// Use it to build a query and print out the resultset.  Make sure to use PreparedStatement!
+String url = "jdbc:sqlserver://cosc304_sqlserver:1433;DatabaseName=orders;TrustServerCertificate=True";
+String uid = "sa";
+String pw = "304#sa#pw";
 
-// Make the connection
+try (Connection con = DriverManager.getConnection(url, uid, pw)) {
 
-// Print out the ResultSet
+    String query = "SELECT productId, productname, productPrice FROM product WHERE productName LIKE ?";
+    PreparedStatement pst = con.prepareStatement(query);
+    String pname_sql = "%" + (name != null ? name : "") + "%";
+    pst.setString(1, pname_sql);
 
-// For each product create a link of the form
-// addcart.jsp?id=productId&name=productName&price=productPrice
-// Close connection
+    ResultSet rst = pst.executeQuery();
 
-// Useful code for formatting currency values:
-// NumberFormat currFormat = NumberFormat.getCurrencyInstance();
-// out.println(currFormat.format(5.0);	// Prints $5.00
+    // Display results in an HTML table
+    out.print("<table>");
+    out.print("<tr><th>Product Name</th><th>Price</th><th>Action</th></tr>");
+
+    NumberFormat currFormat = NumberFormat.getCurrencyInstance();
+
+    while (rst.next()) {
+        int productId = rst.getInt("productId");
+        String productName = rst.getString("productname");
+        double productPrice = rst.getDouble("productPrice");
+
+        String encodedName = URLEncoder.encode(productName, "UTF-8");
+        String addCartLink = "addcart.jsp?id=" + productId + "&name=" + encodedName + "&price=" + productPrice;
+
+        out.print("<tr>");
+        out.print("<td>" + productName + "</td>");
+        out.print("<td>" + currFormat.format(productPrice) + "</td>");
+        out.print("<td><a href='" + addCartLink + "'>Add to Cart</a></td>");
+        out.print("</tr>");
+    }
+
+    out.print("</table>");
+
+} catch (SQLException ex) {
+    out.println("SQLException: " + ex);
+}
 %>
 
 </body>
