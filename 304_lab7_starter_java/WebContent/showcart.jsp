@@ -8,6 +8,96 @@
 <html>
 <head>
 <title>Your Shopping Cart</title>
+<style>
+    /* Body styling */
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f9;
+        color: #333;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    h1 {
+        color: #333;
+        text-align: center;
+        font-size: 2em;
+        margin-top: 20px;
+    }
+
+    /* Table styling */
+    table {
+        width: 80%;
+        border-collapse: collapse;
+        margin: 20px 0;
+        background-color: #fff;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    th, td {
+        padding: 15px;
+        text-align: left;
+    }
+
+    th {
+        background-color: #3498db;
+        color: #fff;
+        font-weight: bold;
+        font-size: 1.1em;
+    }
+
+    td {
+        border-bottom: 1px solid #ddd;
+        color: #555;
+    }
+
+    tr:last-child td {
+        border-bottom: none;
+    }
+
+    /* Currency and quantity styling */
+    td:last-child, th:last-child {
+        text-align: right;
+    }
+
+    /* Button styling */
+    input[type="submit"], a {
+        background-color: #2ecc71;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        padding: 8px 12px;
+        cursor: pointer;
+        text-decoration: none;
+        font-size: 1em;
+        transition: background-color 0.3s ease;
+    }
+
+    input[type="submit"]:hover, a:hover {
+        background-color: #ff4c4c;
+    }
+
+    /* Quantity input styling */
+    input[type="number"] {
+        width: 50px;
+        padding: 5px;
+        font-size: 1em;
+        text-align: center;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+    }
+
+    /* Checkout and continue shopping links */
+    .checkout-container {
+        text-align: center;
+        margin: 20px 0;
+    }
+</style>
 </head>
 <body>
 
@@ -103,9 +193,9 @@
                 + "<td align='right'>" + currFormat.format(total) + "</td><td></td></tr>");
         out.println("</table>");
 
-        out.println("<h2><a href='checkout.jsp'>Check Out</a></h2>");
+        out.println("<div class='checkout-container'><h2><a href='checkout.jsp'>Check Out</a></h2></div>");
     }
 %>
-<h2><a href="listprod.jsp">Continue Shopping</a></h2>
+<div class="checkout-container"><h2><a href="listprod.jsp">Continue Shopping</a></h2></div>
 </body>
 </html>
