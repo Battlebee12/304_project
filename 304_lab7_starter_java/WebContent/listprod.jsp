@@ -82,9 +82,12 @@ try (Connection con = DriverManager.getConnection(url, uid, pw)) {
 
         String encodedName = URLEncoder.encode(productName, "UTF-8");
         String addCartLink = "addcart.jsp?id=" + productId + "&name=" + encodedName + "&price=" + productPrice;
+        String productPageLink = "product.jsp?id=" + productId; // Create the product page URL
+
+
 
         out.print("<tr>");
-        out.print("<td>" + productName + "</td>");
+        out.print("<td><a href='" + productPageLink + "'>" + productName + "</a></td>");
         out.print("<td>" + currFormat.format(productPrice) + "</td>");
         out.print("<td><a href='" + addCartLink + "'>Add to Cart</a></td>");
         out.print("</tr>");
