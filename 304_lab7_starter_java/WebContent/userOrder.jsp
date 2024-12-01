@@ -7,7 +7,6 @@
   <style>
     body {
       font-family: Arial, sans-serif;
-      background-color: #f7f7f7;
       color: #333;
       margin: 0;
       padding: 0;
@@ -16,22 +15,43 @@
     /* Header Section */
     .header-container {
       background-color: #0073e6;
-      
+      padding: 0;
+      position: relative;
+      z-index: 2;
     }
+
     .header-container h1, .header-container nav {
       color: white;
       text-align: center;
       margin: 0;
     }
 
-    .container {
-      max-width: 800px;
+    /* Video Background */
+    .video-background {
+      position: fixed;
+      top: 0;
+      left: 0;
       width: 100%;
+      height: 100%;
+      z-index: -1;
+      overflow: hidden;
+    }
+
+    .video-background video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .container {
+      position: relative;
+      max-width: 800px;
+      margin: 20px auto;
       padding: 20px;
-      background-color: #fff;
+      background-color: rgba(255, 255, 255, 0.9); /* Slightly transparent background */
       border-radius: 8px;
       box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-      margin: 20px auto;
+      z-index: 1;
     }
 
     h2 {
@@ -81,11 +101,19 @@
   <jsp:include page="header.jsp" />
 </div>
 
+<!-- Video Background -->
+<div class="video-background">
+  <video autoplay loop muted>
+    <source src="img/hpchristmas.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+</div>
+
 <div class="container">
   <h2>Your Orders</h2>
 
   <%
-    String customerId = (String) session.getAttribute("userId");  // Get the logged-in user's customerId
+    String customerId = (String) session.getAttribute("userId");
     if (customerId == null) {
   %>
       <p class="error-message">You must be logged in to view your orders.</p>

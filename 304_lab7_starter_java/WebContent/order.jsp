@@ -12,15 +12,18 @@
   <style>
     /* General Body Styling */
     body {
-      font-family: Arial, sans-serif;
-      background-color: #f7f7f7;
-      color: #333;
-      margin: 0;
-      padding: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
+    font-family: Arial, sans-serif;
+    background-image: url('img/hp.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    color: #333;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
 
     /* Container for main content */
     .container {
@@ -403,6 +406,5 @@ session.setAttribute("productList", null);
 	}
 }
 %>
-</BODY>
-</HTML>
-
+</body>
+</html>

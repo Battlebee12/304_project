@@ -10,101 +10,99 @@
 <title>Your Shopping Cart</title>
 <style>
     /* Body styling for cart.jsp */
-     body {
-            margin: 0;
-            padding: 0;
-            font-family: Arial, sans-serif;
-            color: white;
-        }
+    body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    color: white;
+    background-image: url('img/short.jpg'); /* Set your image path here */
+    background-size: cover; /* Make the background image cover the entire page */
+    background-position: center; /* Center the background image */
+    background-attachment: fixed; /* Make the background image fixed when scrolling */
+    height: 100vh; /* Ensure body covers the full height of the viewport */
+}
 
-        header {
-            background-color: #333;
-            color: white;
-            padding: 20px 20px;
-            text-align: center;
-            font-size: 1.5em;
-            z-index: 10; /* Ensure header is always on top */
-        }
-    .cart-body {
-        font-family: Arial, sans-serif;
-        background-color: #f4f4f9;
-        color: #333;
-        margin: 0;
-        padding: 0;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
+/* Container for the cart content */
+.cart-body {
+    font-family: Arial, sans-serif;
+    background-color: rgba(244, 244, 249, 0.9); /* Slight transparency to let the background show through */
+    color: #333;
+    margin: 0;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-radius: 8px;
+    max-width: 1200px; /* Limit the width of the cart content */
+    margin: 50px auto; /* Center the content */
+}
 
-    h1 {
-        color: #333;
-        text-align: center;
-        font-size: 2em;
-        margin-top: 20px;
-    }
+h1 {
+    color: #333;
+    text-align: center;
+    font-size: 2em;
+    margin-top: 20px;
+}
 
-    /* Table styling */
-    table {
-        width: 80%;
-        border-collapse: collapse;
-        margin: 20px 0;
-        background-color: #fff;
-        border-radius: 8px;
-        overflow: hidden;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
+/* Table styling */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    background-color: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
 
-    th, td {
-        padding: 15px;
-        text-align: left;
-    }
+th, td {
+    padding: 15px;
+    text-align: left;
+}
 
-    th {
-        background-color: #3498db;
-        color: #fff;
-        font-weight: bold;
-        font-size: 1.1em;
-    }
+th {
+    background-color: #3498db;
+    color: #fff;
+    font-weight: bold;
+    font-size: 1.1em;
+}
 
-    td {
-        border-bottom: 1px solid #ddd;
-        color: #555;
-    }
+td {
+    border-bottom: 1px solid #ddd;
+    color: #555;
+}
 
-    tr:last-child td {
-        border-bottom: none;
-    }
+tr:last-child td {
+    border-bottom: none;
+}
 
-    /* Currency and quantity styling */
-    td:last-child, th:last-child {
-        text-align: right;
-    }
+/* Currency and quantity styling */
+td:last-child, th:last-child {
+    text-align: right;
+}
 
+/* Quantity input styling */
+input[type="number"] {
+    width: 50px;
+    padding: 5px;
+    font-size: 1em;
+    text-align: center;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+/* Checkout and continue shopping links */
+.checkout-container {
+    text-align: center;
+    margin: 20px 0;
+}
     /* Button styling */
-   
-    
-
-    /* Quantity input styling */
-    input[type="number"] {
-        width: 50px;
-        padding: 5px;
-        font-size: 1em;
-        text-align: center;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-    }
-
-    /* Checkout and continue shopping links */
-    .checkout-container {
-        text-align: center;
-        margin: 20px 0;
-    }
 </style>
 </head>
 <body>
     <!-- Include Header -->
     <jsp:include page="header.jsp" />
-
+    
     <div class="cart-body">
         <%
             // Get the current list of products
