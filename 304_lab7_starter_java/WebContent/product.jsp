@@ -1,153 +1,125 @@
-<%@ page import="java.util.HashMap" %>
+<%@ page import="java.sql.*" %>
+<%@ page import="java.util.ArrayList" %>
 <%@ page import="java.text.NumberFormat" %>
 <%@ page import="java.net.URLEncoder" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF8"%>
-<%@ include file="jdbc.jsp" %>
 
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ray's Grocery - Product Information</title>
+    <title>The Treasure Chest - Product Information</title>
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f9f9f9;
-            margin: 0;
-            padding: 0;
-        }
-
-        .product-container {
-            max-width: 1000px;
-            margin: 60px auto 20px; /* Reduced margin */
-            padding: 20px; /* Reduced padding */
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
-            background-color: #ffffff;
-        }
-
-        .product-header {
-            text-align: center;
-            margin-bottom: 20px; /* Reduced spacing */
-        }
-
-        .product-header h2 {
-            font-size: 2rem; /* Reduced font size */
-            font-weight: bold;
-            color: #333;
-        }
-
-        .product-header p {
-            font-size: 1.4rem; /* Reduced font size */
-            font-weight: bold;
-            color: #28a745;
-            margin-top: 8px;
-        }
-
-        .product-img {
-            max-width: 100%;
-            height: auto;
-            border-radius: 6px; /* Reduced border radius */
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            margin-bottom: 15px; /* Reduced spacing */
-        }
-
-        .product-description {
-            font-size: 1rem; /* Reduced font size */
-            line-height: 1.4; /* Adjusted spacing */
-            margin-top: 15px; /* Reduced margin */
-        }
-
-        .action-btns {
-            display: flex;
-            justify-content: center;
-            gap: 15px; /* Reduced button spacing */
-            margin-top: 20px; /* Reduced margin */
-        }
-
-        .btn-custom {
-            font-size: 1rem; /* Reduced font size */
-            padding: 8px 20px; /* Reduced padding */
-        }
-
-        .no-image {
-            font-size: 1rem; /* Reduced font size */
-            color: #888;
-        }
+        /* Your existing styles for the layout */
+        .product-container { max-width: 900px; margin: 40px auto; padding: 20px; background-color: #ffffff; border: 1px solid #ddd; border-radius: 6px; box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1); }
+        .product-header { text-align: center; }
+        .product-header h1 { font-size: 2.5rem; color: #0056b3; margin-bottom: 10px; }
+        .product-header p { font-size: 1.5rem; color: #28a745; margin-bottom: 20px; }
+        .product-image { display: block; max-width: 100%; max-height: 300px; margin: 20px auto; object-fit: contain; }
+        .product-description { font-size: 1.2rem; line-height: 1.6; margin-top: 10px; color: #333; }
+        .section-title { font-size: 1.5rem; color: #0056b3; margin-bottom: 15px; }
+        .review-section, .submit-review-section { margin-top: 30px; }
+        .review-list { list-style: none; padding: 0; }
+        .review-list li { border-bottom: 1px solid #ddd; padding: 10px 0; font-size: 1rem; color: #333; }
+        .review-form textarea, .review-form select { width: 100%; margin-bottom: 10px; padding: 8px; font-size: 1rem; }
+        .btn { font-size: 1rem; }
     </style>
 </head>
 <body>
-    <%-- Include the header --%>
     <jsp:include page="header.jsp" />
 
-    <%-- Main content --%>
     <div class="container product-container">
-        <%
+        <% 
             String productId = request.getParameter("id");
+            String message = request.getParameter("message");
+            String customerId = (String) session.getAttribute("userId");
 
             if (productId != null && !productId.isEmpty()) {
                 try {
-                    // Connect to the database
+                    // Database connection
                     String url = "jdbc:sqlserver://cosc304_sqlserver:1433;DatabaseName=orders;TrustServerCertificate=True";
                     String uid = "sa";
                     String pw = "304#sa#pw";
                     Connection con = DriverManager.getConnection(url, uid, pw);
 
-                    // Query to fetch product details
-                    String sql = "SELECT productname, productPrice, productDesc, productImageURL FROM product WHERE productId = ?";
-                    PreparedStatement pst = con.prepareStatement(sql);
-                    pst.setInt(1, Integer.parseInt(productId));
+                    // Query product details
+                    String productSql = "SELECT productName, productPrice, productDesc, productImageURL FROM product WHERE productId = ?";
+                    PreparedStatement productPst = con.prepareStatement(productSql);
+                    productPst.setInt(1, Integer.parseInt(productId));
+                    ResultSet productRs = productPst.executeQuery();
 
-                    ResultSet rst = pst.executeQuery();
+                    if (productRs.next()) {
+                        String productName = productRs.getString("productName");
+                        double productPrice = productRs.getDouble("productPrice");
+                        String productDescription = productRs.getString("productDesc");
+                        String productImageURL = productRs.getString("productImageURL");
 
-                    if (rst.next()) {
-                        // Fetch the product details
-                        String productName = rst.getString("productname");
-                        double productPrice = rst.getDouble("productPrice");
-                        String productDescription = rst.getString("productDesc");
-                        String productImageURL = rst.getString("productImageURL"); // Image URL stored in database
+                        %>
+                        <div class="product-header">
+                            <h1><%= productName %></h1>
+                            <p><%= NumberFormat.getCurrencyInstance().format(productPrice) %></p>
+                        </div>
+                        <% if (productImageURL != null && !productImageURL.isEmpty()) { %>
+                            <img src="<%= productImageURL %>" alt="<%= productName %>" class="product-image" />
+                        <% } else { %>
+                            <p class="text-center">No image available for this product.</p>
+                        <% } %>
+                        <div>
+                            <h2 class="section-title">Description:</h2>
+                            <p class="product-description"><%= productDescription != null ? productDescription : "No description available." %></p>
+                        </div>
 
-                        // Encode the product name for URL
-                        String encodedProductName = URLEncoder.encode(productName, "UTF-8");
-                        String addCartLink = "addCart.jsp?id=" + productId + "&name=" + encodedProductName + "&price=" + productPrice;
-                        String continueShoppingLink = "listprod.jsp"; // Redirect back to product listing
-        %>
+                        <% 
+                        // Query reviews
+                        String reviewSql = "SELECT reviewId, reviewRating, reviewComment FROM review WHERE productId = ?";
+                        PreparedStatement reviewPst = con.prepareStatement(reviewSql);
+                        reviewPst.setInt(1, Integer.parseInt(productId));
+                        ResultSet reviewRs = reviewPst.executeQuery();
 
-        <div class="product-header">
-            <h2><%= productName %></h2>
-            <p><%= NumberFormat.getCurrencyInstance().format(productPrice) %></p>
-        </div>
+                        ArrayList<String> reviews = new ArrayList<>();
+                        while (reviewRs.next()) {
+                            int reviewId = reviewRs.getInt("reviewId");
+                            int rating = reviewRs.getInt("reviewRating");
+                            String comment = reviewRs.getString("reviewComment");
+                            reviews.add("Review " + reviewId + " (" + rating + "/5): " + comment);
+                        }
+                        %>
 
-        <div class="row">
-            <!-- Product Image -->
-            <div class="col-md-6">
-                <% if (productImageURL != null && !productImageURL.isEmpty()) { %>
-                    <img src="<%= productImageURL %>" alt="<%= productName %>" class="product-img" />
-                <% } else { %>
-                    <p class="no-image">No image available for this product.</p>
-                <% } %>
-            </div>
+                        <div class="review-section">
+                            <h2 class="section-title">Reviews:</h2>
+                            <% if (reviews.isEmpty()) { %>
+                                <p>No reviews yet. Be the first to review!</p>
+                            <% } else { %>
+                                <ul class="review-list">
+                                    <% for (String review : reviews) { %>
+                                        <li><%= review %></li>
+                                    <% } %>
+                                </ul>
+                            <% } %>
+                        </div>
 
-            <!-- Product Description -->
-            <div class="col-md-6">
-                <h4>Description:</h4>
-                <p class="product-description">
-                    <%= productDescription != null ? productDescription : "No description available." %>
-                </p>
-            </div>
-        </div>
-
-        <div class="action-btns">
-            <!-- Add to Cart Button -->
-            <a href="<%= addCartLink %>" class="btn btn-primary btn-custom">Add to Cart</a>
-
-            <!-- Continue Shopping Button -->
-            <a href="<%= continueShoppingLink %>" class="btn btn-secondary btn-custom">Continue Shopping</a>
-        </div>
-
-        <%
+                        <div class="submit-review-section">
+                            <h2 class="section-title">Submit Your Review</h2>
+                            <% if (message != null && !message.isEmpty()) { %>
+                                <div class="alert alert-info"><%= message %></div>
+                            <% } %>
+                            <form method="post" action="submitReview.jsp" class="review-form">
+                                <input type="hidden" name="customerId" value="<%= customerId %>" />
+                                <input type="hidden" name="productId" value="<%= productId %>" />
+                                <label for="reviewRating">Rating (1-5):</label>
+                                <select name="reviewRating" id="reviewRating" required>
+                                    <option value="">Select...</option>
+                                    <% for (int i = 1; i <= 5; i++) { %>
+                                        <option value="<%= i %>"><%= i %></option>
+                                    <% } %>
+                                </select>
+                                <label for="reviewComment">Comment:</label>
+                                <textarea name="reviewComment" id="reviewComment" rows="4" placeholder="Write your review..." required></textarea>
+                                <button type="submit" class="btn btn-primary">Submit Review</button>
+                            </form>
+                        </div>
+                        <%
                     } else {
                         out.println("<p>Product not found.</p>");
                     }
