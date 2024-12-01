@@ -12,18 +12,15 @@
   <style>
     /* General Body Styling */
     body {
-    font-family: Arial, sans-serif;
-    background-image: url('img/hp.jpg');
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-    color: #333;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
+      font-family: Arial, sans-serif;
+      background-color: #f7f7f7;
+      color: #333;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
 
     /* Container for main content */
     .container {
@@ -273,6 +270,7 @@ ResultSet generatedKeys = pstmt.getGeneratedKeys();
 int orderId = -1;
 if (generatedKeys.next()) {
     orderId = generatedKeys.getInt(1);
+   // out.println("Order has been successfully placed \n Your Order ID is " + orderId);
 	out.println("Order has been successfully placed \n Your Order ID is " + orderId);
 	// Since we are laready printing this out for bonus, dont need to, but have kept it just for this
 } else {
@@ -406,5 +404,6 @@ session.setAttribute("productList", null);
 	}
 }
 %>
-</body>
-</html>
+</BODY>
+</HTML>
+
