@@ -14,7 +14,7 @@
         header {
             background-color: #333;
             color: white;
-            padding: 15px 20px;
+            padding: 20px 20px;
             text-align: center;
             font-size: 1.5em;
             z-index: 10; /* Ensure header is always on top */

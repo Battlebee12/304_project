@@ -33,10 +33,10 @@
         <!-- Navigation Links -->
         <div class="nav-links">
             <a href="index.jsp">Home</a>
-            <a href="shop.html">Shop</a>
+            <a href="listprod.jsp">Shop</a>
             <%-- <a href="listprod.jsp">Products</a> --%>
             <a href="showcart.jsp">Cart</a>
-            <a href="order.jsp">Orders</a>
+            <a href="listorder.jsp">Orders</a>
             <a href="admin.jsp">Admin</a>
         </div>
 

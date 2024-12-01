@@ -12,7 +12,7 @@
             background-color: #f4f6f8;
             color: #2c3e50;
             margin: 0;
-            padding: 20px;
+           
         }
         h1 {
             text-align: center;
@@ -82,7 +82,8 @@
     </style>
 </head>
 <body>
-    <h1>Your Name Grocery Order List</h1>
+<jsp:include page="header.jsp" />
+    
 
 
 <%

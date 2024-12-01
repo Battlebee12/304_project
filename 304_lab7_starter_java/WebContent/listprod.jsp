@@ -65,14 +65,38 @@
             border: 1px solid #ddd;
             border-radius: 5px;
             padding: 10px;
-            width: 30%;
+            width: calc(33% - 20px); /* Ensure 3 products per row with spacing */
+            box-sizing: border-box;
+            text-align: center;
         }
 
         .product-item img {
             max-width: 100%;
-            height: auto;
+            height: 150px; /* Set fixed height for uniformity */
+            object-fit: cover; /* Ensure images are not stretched */
             display: block;
-            margin-bottom: 10px;
+            margin: 0 auto 10px;
+        }
+
+        .product-item h3 {
+            font-size: 1.2em;
+            margin: 10px 0;
+        }
+
+        .product-item p {
+            font-size: 1em;
+            color: #555;
+            margin: 5px 0;
+        }
+
+        .product-item a {
+            text-decoration: none;
+            color: #007BFF;
+            font-weight: bold;
+        }
+
+        .product-item a:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
@@ -117,7 +141,7 @@
                 String searchQuery = request.getParameter("search");
                 String categoryFilter = request.getParameter("category");
 
-                String query = "SELECT productName, productPrice, productImageURL FROM product";
+                String query = "SELECT productId, productName, productPrice, productImageURL FROM product";
                 boolean hasCondition = false;
 
                 if (searchQuery != null && !searchQuery.trim().isEmpty()) {
@@ -141,13 +165,14 @@
 
                     ResultSet rs = stmt.executeQuery();
                     while (rs.next()) {
+                        int productId = rs.getInt("productId");
                         String productName = rs.getString("productName");
                         double productPrice = rs.getDouble("productPrice");
                         String productImageURL = rs.getString("productImageURL");
             %>
             <div class="product-item">
                 <img src="<%= productImageURL %>" alt="<%= productName %>">
-                <h3><%= productName %></h3>
+                <h3><a href="product.jsp?id=<%= productId %>"><%= productName %></a></h3>
                 <p>Price: $<%= productPrice %></p>
             </div>
             <% 
