@@ -1,4 +1,3 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -12,13 +11,13 @@
         }
 
         header {
-            background-color: #333;
-            color: white;
-            padding: 20px 20px;
-            text-align: center;
-            font-size: 1.5em;
-            z-index: 10; /* Ensure header is always on top */
-        }
+        background-color: #333;
+        color: white;
+        padding: 50px 20px; /* Increased padding */
+        text-align: center;
+        font-size: 2.5em; /* Increased font size */
+        z-index: 10; /* Ensure header is always on top */
+    }
 
         .background {
             position: relative;
@@ -48,19 +47,21 @@
         }
 
         .content {
-            position: relative; /* Allows layering on top of the video */
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
             text-align: center;
-            padding: 50px 20px;
             z-index: 1; /* Content appears on top of the overlay */
         }
 
         .content h1 {
-            font-size: 3em;
+            font-size: 4em; /* Increase the font size */
             margin-bottom: 20px;
         }
 
         .content p {
-            font-size: 1.5em;
+            font-size: 2em; /* Increase the font size */
             margin-bottom: 30px;
         }
 
@@ -74,9 +75,9 @@
             text-decoration: none;
             color: white;
             background-color: #007BFF;
-            padding: 15px 25px;
+            padding: 20px 35px; /* Increase button size */
             border-radius: 5px;
-            font-size: 1.2em;
+            font-size: 1.5em; /* Increase font size */
             transition: 0.3s ease;
         }
 
@@ -105,10 +106,24 @@
 
             <!-- Buttons for usual homepage features -->
             <div class="button-container">
-                <a href="listprod.jsp">Browse Products</a>
-                <a href="showcart.jsp">View Cart</a>
-                <a href="login.jsp">Login/Register</a>
-            </div>
+				<a href="listprod.jsp">Browse Products</a>
+				<% 
+					if (session.getAttribute("username") != null) { 
+				%>
+					<a href="showcart.jsp">View Cart</a>
+				<% 
+					} 
+				%>
+				<% 
+					if (session.getAttribute("username") == null) { 
+				%>
+					<a href="login.jsp">Login/Register</a>
+				<% 
+					} 
+				%>
+			</div>
+
+
         </div>
     </div>
 </body>

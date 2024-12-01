@@ -64,6 +64,7 @@
         .header-container {
             width: 100%;
         }
+        
     </style>
 </head>
 <body>
@@ -72,6 +73,7 @@
 <div class="header-container">
     <jsp:include page="header.jsp" />
 </div>
+        
 
 <%@ include file="auth.jsp" %>
 <%@ page import="java.sql.*, java.text.NumberFormat" %>

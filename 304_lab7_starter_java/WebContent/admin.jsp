@@ -1,6 +1,4 @@
 <%@ page import="java.sql.*, java.text.NumberFormat, java.util.Arrays, java.util.List" %>
-
-<%-- Include the header file --%>
 <jsp:include page="header.jsp" />
 
 <%
@@ -10,9 +8,9 @@
     // Get the logged-in user's username from the session
     String username = (String) session.getAttribute("username");
 
-    // Check if the user is logged in and is an admin
+    // Redirect non-admin users to login if they are not authorized
     if (username == null || !adminUsers.contains(username)) {
-        response.sendRedirect("login.jsp"); // Redirect non-admin users to login
+        response.sendRedirect("login.jsp");
         return;
     }
 
@@ -21,9 +19,7 @@
     String pw = "304#sa#pw";
 
     // SQL query to fetch total sales grouped by day
-    String sql = "SELECT CONVERT(DATE, orderDate) AS SaleDate, SUM(totalAmount) AS TotalSales " +
-                 "FROM ordersummary GROUP BY CONVERT(DATE, orderDate) ORDER BY SaleDate DESC";
-
+    String sql = " SELECT CONVERT(DATE, orderDate) AS SaleDate, SUM(totalAmount) AS TotalSales FROM ordersummary GROUP BY CONVERT(DATE, orderDate) ORDER BY SaleDate DESC";
 %>
 
 <!DOCTYPE html>
@@ -33,29 +29,47 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard</title>
     <style>
+        /* General styles */
         body {
             font-family: Arial, sans-serif;
             background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
         }
+
+        /* Background video */
+        .background video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1;
+        }
+
+        /* Layout styles */
         .container {
             display: flex;
-            width: 100%;
             max-width: 1200px;
-            margin-top: 20px;
+            margin: 20px auto;
+            gap: 20px;
         }
+
         .sidebar {
             width: 250px;
             background-color: #0073e6;
             padding: 20px;
             color: white;
             border-radius: 8px;
-            height: 100%;
         }
+
         .sidebar h2 {
             font-size: 1.5em;
-            margin-bottom: 20px;
             text-align: center;
+            margin-bottom: 20px;
         }
+
         .sidebar a {
             display: block;
             color: white;
@@ -66,9 +80,11 @@
             background-color: #005bb5;
             text-align: center;
         }
+
         .sidebar a:hover {
             background-color: #004494;
         }
+
         .content {
             flex: 1;
             padding: 20px;
@@ -76,27 +92,30 @@
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
+
+        /* Table styles */
         table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
         }
+
         th, td {
             border: 1px solid #ddd;
             padding: 12px;
             text-align: center;
         }
+
         th {
             background-color: #0073e6;
             color: white;
         }
+
         tr:nth-child(even) {
             background-color: #f2f2f2;
         }
-        h1 {
-            text-align: center;
-            color: #0073e6;
-        }
+
+        /* Button styles */
         .load-data-btn {
             margin: 20px 0;
             padding: 10px 20px;
@@ -106,12 +125,20 @@
             cursor: pointer;
             border-radius: 5px;
         }
+
         .load-data-btn:hover {
             background-color: #218838;
         }
+
         .message {
             margin-top: 10px;
             font-weight: bold;
+            color: #0073e6;
+        }
+
+        /* Header styles */
+        h1 {
+            text-align: center;
             color: #0073e6;
         }
     </style>
@@ -134,6 +161,12 @@
     </script>
 </head>
 <body>
+    <div class="background">
+        <video autoplay muted loop>
+            <source src="img/v2.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+    </div>
     <div class="container">
         <div class="sidebar">
             <h2>Admin Dashboard</h2>
