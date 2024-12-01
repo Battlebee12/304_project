@@ -6,25 +6,37 @@
     <style>
         body {
             font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
         }
         .navbar {
             display: flex;
             justify-content: space-between;
+            align-items: center;
             background-color: #333;
-            padding: 10px;
+            padding: 10px 20px;
             color: white;
         }
-        .navbar a {
+        .nav-links a {
             color: white;
             text-decoration: none;
             padding: 0 15px;
+            font-size: 16px;
         }
-        .navbar a:hover {
+        .nav-links a:hover {
             text-decoration: underline;
         }
         .user-info {
             display: flex;
             align-items: center;
+        }
+        .user-info a {
+            color: white;
+            text-decoration: none;
+            padding: 0 15px;
+        }
+        .user-info a:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
@@ -34,9 +46,8 @@
         <div class="nav-links">
             <a href="index.jsp">Home</a>
             <a href="listprod.jsp">Shop</a>
-            <%-- <a href="listprod.jsp">Products</a> --%>
             <a href="showcart.jsp">Cart</a>
-            <a href="listorder.jsp">Orders</a>
+            <a href="userOrder.jsp">Orders</a>
             <a href="admin.jsp">Admin</a>
         </div>
 
@@ -48,6 +59,7 @@
                 if (username != null) {
             %>
                 Welcome, <b><%= username %></b>! 
+                <a href="customer.jsp" style="margin-left: 15px;">Profile</a> <!-- Profile Link -->
                 <a href="logout.jsp" style="margin-left: 15px;">Logout</a>
             <% } else { %>
                 <a href="login.jsp">Login</a>
