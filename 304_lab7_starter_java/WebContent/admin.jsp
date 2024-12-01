@@ -36,7 +36,6 @@
         body {
             font-family: Arial, sans-serif;
             background-color: #f4f4f4;
-           
         }
         .container {
             display: flex;
@@ -98,7 +97,41 @@
             text-align: center;
             color: #0073e6;
         }
+        .load-data-btn {
+            margin: 20px 0;
+            padding: 10px 20px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .load-data-btn:hover {
+            background-color: #218838;
+        }
+        .message {
+            margin-top: 10px;
+            font-weight: bold;
+            color: #0073e6;
+        }
     </style>
+    <script>
+        function loadData() {
+            const messageDiv = document.getElementById('message');
+            messageDiv.textContent = "Loading data...";
+            fetch('loaddata.jsp')
+                .then(response => {
+                    if (response.ok) {
+                        messageDiv.textContent = "Data loaded successfully!";
+                    } else {
+                        messageDiv.textContent = "Failed to load data.";
+                    }
+                })
+                .catch(error => {
+                    messageDiv.textContent = "Error: " + error.message;
+                });
+        }
+    </script>
 </head>
 <body>
     <div class="container">
@@ -108,10 +141,13 @@
             <a href="admin.jsp">List Report: Total Sales/Orders</a>
             <a href="addProduct.jsp">Add New Product</a>
             <a href="updateProduct.jsp">Update/Delete Product</a>
-            <a href="updateStatus.jsp">Update Order/Shipmentt</a>
+            <a href="updateStatus.jsp">Update Order/Shipment</a>
+            <a href="warehouse.jsp">Warehouses</a>
         </div>
         <div class="content">
             <h1>Sales Report</h1>
+            <button class="load-data-btn" onclick="loadData()">Load Data</button>
+            <div id="message" class="message"></div>
             <table>
                 <tr>
                     <th>Date</th>
