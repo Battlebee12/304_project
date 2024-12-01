@@ -1,104 +1,162 @@
-<%@ page import="java.sql.*,java.net.URLEncoder" %>
-<%@ page import="java.text.NumberFormat" %>
-<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF8"%>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page import="java.sql.*" %>
 <!DOCTYPE html>
 <html>
 <head>
-<title>Your Name Grocery</title>
-<style>
-    body {
-        font-family: Arial, sans-serif;
-        background-color: #f7f7f7;
-        color: #333;
-        padding: 20px;
-    }
-    h1 {
-        color: #2c3e50;
-    }
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 20px;
-    }
-    th, td {
-        border: 1px solid #ddd;
-        padding: 8px;
-        text-align: center;
-    }
-    th {
-        background-color: #3498db;
-        color: white;
-    }
-    tr:nth-child(even) {
-        background-color: #f2f2f2;
-    }
-    a {
-        color: #3498db;
-        text-decoration: none;
-    }
-</style>
+    <title>Product Display</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        .header {
+            width: 100%;
+            background-color: #007BFF; /* Adjust color as needed */
+            color: white;
+            padding: 10px 0;
+            text-align: center;
+            position: fixed; /* Keeps the header at the top */
+            top: 0;
+            left: 0;
+            z-index: 1000;
+        }
+
+        .header nav ul {
+            margin: 0;
+            padding: 0;
+            list-style-type: none;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .header nav ul li {
+            display: inline;
+        }
+
+        .header nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-size: 1.2em;
+        }
+
+        .header nav ul li a:hover {
+            text-decoration: underline;
+        }
+
+        .content {
+            padding-top: 60px; /* Prevent overlap with fixed header */
+            padding: 20px;
+        }
+
+        .search-bar {
+            margin-bottom: 20px;
+        }
+
+        .product-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .product-item {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 10px;
+            width: 30%;
+        }
+
+        .product-item img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin-bottom: 10px;
+        }
+    </style>
 </head>
 <body>
+    <%-- Include the header --%>
+    <jsp:include page="header.jsp" />
 
-<h1>Search for the products you want to buy:</h1>
+    <%-- Main content area --%>
+    <div class="content">
+        <h1>Product Display</h1>
+        <form method="GET" class="search-bar">
+            <input type="text" name="search" placeholder="Search products..." value="<%= request.getParameter("search") != null ? request.getParameter("search") : "" %>">
+            <select name="category">
+                <option value="">All Categories</option>
+                <% 
+                    String url = "jdbc:sqlserver://cosc304_sqlserver:1433;DatabaseName=orders;TrustServerCertificate=True";
+                    String uid = "sa";
+                    String pw = "304#sa#pw";
 
-<form method="get" action="listprod.jsp">
-    <input type="text" name="productName" size="50">
-    <input type="submit" value="Submit">
-    <input type="reset" value="Reset"> (Leave blank for all products)
-</form>
+                    try (Connection con = DriverManager.getConnection(url, uid, pw);
+                         Statement stmt = con.createStatement();
+                         ResultSet rs = stmt.executeQuery("SELECT categoryId, categoryName FROM category")) {
+                        while (rs.next()) {
+                            int categoryId = rs.getInt("categoryId");
+                            String categoryName = rs.getString("categoryName");
+                            String selected = (request.getParameter("category") != null && request.getParameter("category").equals(String.valueOf(categoryId))) ? "selected" : "";
+                %>
+                <option value="<%= categoryId %>" <%= selected %>><%= categoryName %></option>
+                <% 
+                        }
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                %>
+            </select>
+            <button type="submit">Search</button>
+        </form>
 
-<%
-String name = request.getParameter("productName");
-try {
-    Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-} catch (java.lang.ClassNotFoundException e) {
-    out.println("ClassNotFoundException: " + e);
-}
+        <%-- Fetch and display products --%>
+        <div class="product-list">
+            <% 
+                String searchQuery = request.getParameter("search");
+                String categoryFilter = request.getParameter("category");
 
-String url = "jdbc:sqlserver://cosc304_sqlserver:1433;DatabaseName=orders;TrustServerCertificate=True";
-String uid = "sa";
-String pw = "304#sa#pw";
+                String query = "SELECT productName, productPrice, productImageURL FROM product";
+                boolean hasCondition = false;
 
-try (Connection con = DriverManager.getConnection(url, uid, pw)) {
+                if (searchQuery != null && !searchQuery.trim().isEmpty()) {
+                    query += " WHERE productName LIKE ?";
+                    hasCondition = true;
+                }
+                if (categoryFilter != null && !categoryFilter.trim().isEmpty()) {
+                    query += hasCondition ? " AND categoryId = ?" : " WHERE categoryId = ?";
+                }
 
-    String query = "SELECT productId, productname, productPrice FROM product WHERE productName LIKE ?";
-    PreparedStatement pst = con.prepareStatement(query);
-    String pname_sql = "%" + (name != null ? name : "") + "%";
-    pst.setString(1, pname_sql);
+                try (Connection con = DriverManager.getConnection(url, uid, pw);
+                     PreparedStatement stmt = con.prepareStatement(query)) {
 
-    ResultSet rst = pst.executeQuery();
+                    int paramIndex = 1;
+                    if (searchQuery != null && !searchQuery.trim().isEmpty()) {
+                        stmt.setString(paramIndex++, "%" + searchQuery + "%");
+                    }
+                    if (categoryFilter != null && !categoryFilter.trim().isEmpty()) {
+                        stmt.setInt(paramIndex++, Integer.parseInt(categoryFilter));
+                    }
 
-    // Display results in an HTML table
-    out.print("<table>");
-    out.print("<tr><th>Product Name</th><th>Price</th><th>Action</th></tr>");
-
-    NumberFormat currFormat = NumberFormat.getCurrencyInstance();
-
-    while (rst.next()) {
-        int productId = rst.getInt("productId");
-        String productName = rst.getString("productname");
-        double productPrice = rst.getDouble("productPrice");
-
-        String encodedName = URLEncoder.encode(productName, "UTF-8");
-        String addCartLink = "addcart.jsp?id=" + productId + "&name=" + encodedName + "&price=" + productPrice;
-        String productPageLink = "product.jsp?id=" + productId; // Create the product page URL
-
-
-
-        out.print("<tr>");
-        out.print("<td><a href='" + productPageLink + "'>" + productName + "</a></td>");
-        out.print("<td>" + currFormat.format(productPrice) + "</td>");
-        out.print("<td><a href='" + addCartLink + "'>Add to Cart</a></td>");
-        out.print("</tr>");
-    }
-
-    out.print("</table>");
-
-} catch (SQLException ex) {
-    out.println("SQLException: " + ex);
-}
-%>
-
+                    ResultSet rs = stmt.executeQuery();
+                    while (rs.next()) {
+                        String productName = rs.getString("productName");
+                        double productPrice = rs.getDouble("productPrice");
+                        String productImageURL = rs.getString("productImageURL");
+            %>
+            <div class="product-item">
+                <img src="<%= productImageURL %>" alt="<%= productName %>">
+                <h3><%= productName %></h3>
+                <p>Price: $<%= productPrice %></p>
+            </div>
+            <% 
+                    }
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            %>
+        </div>
+    </div>
 </body>
 </html>
