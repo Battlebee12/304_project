@@ -100,7 +100,7 @@
 
         <!-- Main content section -->
         <div class="content">
-            <h1>Welcome to Our Online Store</h1>
+            <h1>Welcome to The Treasure Chest</h1>
             <p>Your one-stop shop for all your needs!</p>
 
             <!-- Buttons for usual homepage features -->

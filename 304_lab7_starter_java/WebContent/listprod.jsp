@@ -106,7 +106,7 @@
 
     <%-- Main content area --%>
     <div class="content">
-        <h1>Product Display</h1>
+        <h1>The Loot</h1>
         <form method="GET" class="search-bar">
             <input type="text" name="search" placeholder="Search products..." value="<%= request.getParameter("search") != null ? request.getParameter("search") : "" %>">
             <select name="category">
