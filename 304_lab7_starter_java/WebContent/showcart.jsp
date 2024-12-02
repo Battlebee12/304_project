@@ -7,7 +7,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Your Shopping Cart</title>
+<title>Your Loot</title>
 <style>
     /* Body styling for cart.jsp */
     body {

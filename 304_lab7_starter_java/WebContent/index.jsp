@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Home Page</title>
+    <title>Home to the Treasure</title>
     <style>
         body {
             margin: 0;

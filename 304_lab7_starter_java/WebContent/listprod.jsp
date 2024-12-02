@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Product Display</title>
+    <title>The Loot</title>
     <style>
     body {
         margin: 0;

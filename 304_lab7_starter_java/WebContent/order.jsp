@@ -8,7 +8,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Your Name Grocery Order Processing</title>
+  <title>The Treasure Chest is loading...</title>
   <style>
     /* General Body Styling */
     body {
@@ -34,6 +34,15 @@
     }
 
     /* Header Styling */
+    header {
+      width: 100%;
+      background-color: #0073e6;
+      color: white;
+      padding: 0px;
+      text-align: center;
+      box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
     h2 {
       color: #0073e6;
       text-align: center;
@@ -136,7 +145,9 @@
 </head>
 
 <body>
-
+<header>
+  <jsp:include page="header.jsp" />
+</header>
 
 <% 
 try {

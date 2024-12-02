@@ -1,5 +1,5 @@
 <%@ page import="java.sql.*, java.text.NumberFormat, java.util.Arrays, java.util.List" %>
-<jsp:include page="header.jsp" />
+
 
 <%
     // Predefined list of admin usernames
@@ -27,7 +27,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard</title>
+    <title>Aye Aye Captain!</title>
     <style>
         /* General styles */
         body {
@@ -161,6 +161,7 @@
     </script>
 </head>
 <body>
+<jsp:include page="header.jsp" />
     <div class="background">
         <video autoplay muted loop>
             <source src="img/v2.mp4" type="video/mp4">

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Customer Page</title>
+    <title>User Profile</title>
     <style>
         body {
             font-family: Arial, sans-serif;
